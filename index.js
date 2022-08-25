@@ -2,14 +2,15 @@
 let provider = new ethers.providers.Web3Provider(window.ethereum)
 let signer
 
+
 // 1. Conectar Metamask
+var carteira_conectada;
 async function connectMetamask() {
     // MetaMask requires requesting permission to connect users accounts
     await provider.send("eth_requestAccounts", []);
-
     signer = await provider.getSigner();
-
     console.log("O endereco da sua carteira eh: ", await signer.getAddress());
+    return carteira_conectada = await signer.getAddress();
 }
 
 // 2. Pegar saldo matic
@@ -561,7 +562,7 @@ const abi = [
     }
   ]
 
-var endereco_carteirinha_mintada;
+var endereco_carteirinha_mintada = "0x3ed12b66aa9869a2a39b590196491afccda35072";
 
 async function mintCarteirinha() {
     
@@ -574,6 +575,17 @@ async function mintCarteirinha() {
     const transactionReceipt = await numberContract.deployTransaction.wait();
 
     return endereco_carteirinha_mintada = transactionReceipt.contractAddress; // transactionReceipt eh um objeto DOM        
+}
+
+// 4. Adicionar conquista ao historico e aguardar pela mineracao do bloco
+async function setOwnerWallet() {
+    const wallet = "0x9f35A48f96086891aF2Aa633789888268488e4D2" // carteira que tera o token mintado 
+    const carteirinhaNFTcontract = new ethers.Contract(endereco_carteirinha_mintada, abi, provider);
+    const transacao = await carteirinhaNFTcontract.connect(signer).safeMint(wallet)
+    await transacao.wait()
+
+    confirmacao = await carteirinhaNFTcontract.balanceOf(wallet)
+    console.log(`A carteira ${wallet} agora possui ${confirmacao} CNFT. Para ver na metamask, adicione o token ${endereco_carteirinha_mintada}`)
 }
 
 // 4. Adicionar conquista ao historico e aguardar pela mineracao do bloco
@@ -599,200 +611,27 @@ async function lerHistoricoCarteirinha() {
     console.log(`historico = ${historico}`)
 }
 
-// 4. Send Usdt to one account to another
-async function sendUsdtToAccount() {
-    const carteirinhaNFTcontract = new ethers.Contract(carteirinhaNFTaddress, carteirinhaNFTabi, provider);
-    carteirinhaNFTcontract.connect(signer).transfer("0x6CC3dFBec068b7fccfE06d4CD729888997BdA6eb", "500000000")
+async function balanceOf() {
+
+    const carteirinhaNFTcontract = new ethers.Contract(endereco_carteirinha_mintada, abi, provider);
+    
+    const dados = await carteirinhaNFTcontract.balanceOf(carteira_conectada)
+   
+    if (parseInt(dados) > 0) {
+        console.log(`A carteita ${carteira_conectada} ja tem ${dados.toString()} CarteirinhaNFT. Verifique se ela caiu na sua metamask.`)
+    } else {
+        console.log(`Voce ainda nao tem o token mintado em sua carteira. Clique no botao "Mintar na Metamask"`)
+    }
 }
 
-// 7. Emit event and Print out the event immediately after being emmited
-async function emitAnEvent() {
-    const numberContractAddress = "0xf1f3298bc741a5801ac08f2be84f822de2312c97";
+// transferir CNFT para outra carteita
+async function TransferFrom() {
 
-    const numberContractAbi = [
-        "function emitAnEvent() external",
-    ];
+    const carteirinhaNFTcontract = new ethers.Contract(endereco_carteirinha_mintada, abi, provider);
 
-    const numberContract = new ethers.Contract(numberContractAddress, numberContractAbi, provider);
-
-    const tx = await numberContract.connect(signer).emitAnEvent()
-    const txReceipt = await tx.wait()
-
-    console.log("event was emmited")
-
-    console.log(txReceipt.events[0])
-}
-
-// 8. Listen for events being emmited in the background
-// listening for an event to be emitted, and to do a task based on that.
-
-async function listenToEvents() {
-    // Subscribe to event calling listener when the event occurs.
-    const numberContractAddress = "0xb2f3ebf53ad585ccaefeb4960ff54329ebf2007a";
-    const numberContractAbi = [
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "from",
-                    "type": "address"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "uint256",
-                    "name": "randomNumber",
-                    "type": "uint256"
-                }
-            ],
-            "name": "MyEvent",
-            "type": "event"
-        },
-        {
-            "inputs": [],
-            "name": "deposit",
-            "outputs": [],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "emitAnEvent",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "getBalance",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "incrementNumber",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "number",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        }
-    ]
-    // The Contract object
-    const numberContract = new ethers.Contract(numberContractAddress, numberContractAbi, provider);
-
-    numberContract.on("MyEvent", (from, number) => {
-        console.log(`address emiting the event = ${from}`)
-        console.log(`number from event = ${number}`)
-    })
-}
-
-async function sendEtherWhenCallingFunction() {
-    const numberContractAddress = "0xb2f3ebf53ad585ccaefeb4960ff54329ebf2007a";
-    const numberContractAbi = [
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "from",
-                    "type": "address"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "uint256",
-                    "name": "randomNumber",
-                    "type": "uint256"
-                }
-            ],
-            "name": "MyEvent",
-            "type": "event"
-        },
-        {
-            "inputs": [],
-            "name": "deposit",
-            "outputs": [],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "emitAnEvent",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "getBalance",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "incrementNumber",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "number",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        }
-    ]
-    // The Contract object
-    const numberContract = new ethers.Contract(numberContractAddress, numberContractAbi, provider);
-
-    const options = {value: ethers.utils.parseEther("0.005")}
-
-    const txResponse = await numberContract.connect(signer).deposit(options)
-
-    await txResponse.wait()
-
-    const balance = await numberContract.getBalance()
-    console.log(`balance = ${balance.toString()}`)
-}
-
-
-async function readFromSCOnctractStorage() {
-    const storageSlot = 0 // 1 means 2 storage slot because we are starting from 0
-    const contractAddress = "0x9d6F5181065e3beD0e29de393165b43B7fF9E33B"
-    const data = await provider.getStorageAt(contractAddress, storageSlot);
-    console.log(data)
+    const transacao = await carteirinhaNFTcontract.connect(signer).transferFrom("0x9f35A48f96086891aF2Aa633789888268488e4D2", "0xaCFCC27FA9ec31c40B38289808cC15e4AEafe05a", "0")
+    await transacao.wait()
+    
+    const dados = await carteirinhaNFTcontract.balanceOf(carteira_conectada)
+    console.log(`A carteita ${carteira_conectada} agora tem ${dados.toString()} CNFT. Verifique se ela saiu da sua metamask.`)
 }
