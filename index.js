@@ -563,7 +563,7 @@ const abi = [
   ]
 
 // Minta carteirinha e guarda hash do endereco em uma variavel
-var endereco_carteirinha_mintada = "0x3ed12b66aa9869a2a39b590196491afccda35072"; // defini uma carteirinha ja criada para nao pagar muita taxa de deploy para testar funcoes
+var endereco_carteirinha_mintada = "0x47c88178c826871F79e1d7E1a662Ba670ddC7259"; // defini uma carteirinha ja criada para nao pagar muita taxa de deploy para testar funcoes
 
 async function mintCarteirinha() {
     // copiando e colando bytecode da polygonscan (necessario apenas para fazer deploy)
@@ -580,7 +580,7 @@ async function mintCarteirinha() {
 
 // Minta o NFT a uma carteira, ou seja, define um dono ao NFT.
 async function setOwnerWallet() {
-    const wallet = "0x9f35A48f96086891aF2Aa633789888268488e4D2" // carteira que tera o token mintado 
+    const wallet = "0x0fC0858A5b5ABeFb358b40D7AA426f600Ec322Dd" // carteira que tera o token mintado 
     const carteirinhaNFTcontract = new ethers.Contract(endereco_carteirinha_mintada, abi, provider); // define carteirinhaNFTcontract como um objeto que interage com as funcoes do contrato CarteirinhaNFT.sol
     const transacao = await carteirinhaNFTcontract.connect(signer).safeMint(wallet) //executa a funcao de mint do contrato. Para funcoes que mudam o estado da blockchain, eh necessario uma assinatura confirmacao (signer)
     await transacao.wait()
@@ -632,7 +632,7 @@ async function TransferFrom() {
 
     const carteirinhaNFTcontract = new ethers.Contract(endereco_carteirinha_mintada, abi, provider);
 
-    const transacao = await carteirinhaNFTcontract.connect(signer).transferFrom("0x9f35A48f96086891aF2Aa633789888268488e4D2", "0xaCFCC27FA9ec31c40B38289808cC15e4AEafe05a", "0")
+    const transacao = await carteirinhaNFTcontract.connect(signer).transferFrom("0xaCFCC27FA9ec31c40B38289808cC15e4AEafe05a", "0x9f35A48f96086891aF2Aa633789888268488e4D2", "0")
     await transacao.wait()
     
     const dados = await carteirinhaNFTcontract.balanceOf(carteira_conectada)
