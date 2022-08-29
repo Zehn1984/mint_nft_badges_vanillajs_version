@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Interagindo com CarteirinhaNFT</title>
     
 </head>
@@ -16,10 +17,67 @@
     <button onclick="lerHistoricoCarteirinha()">Ver Historico</button>
     <button onclick="balanceOf()">Confirmar Mint</button>
     <button onclick="TransferFrom()">Transferir CNFT</button>
+=======
+    <title>Interagindo com CarteirinhaNFT</title>    
+</head>
+<body>
+    <h1>Interagindo com CarteirinhaNFT</h1>
+    <button onclick="connectMetamask()">Conectar</button> <br>
+    <p id="connect"> Carteira conectada: </p>
+    <br>
+
+    <button onclick="getBalance()">Saldo</button> <br>
+    <p id="get_balance">Matic: </p>
+    <br>
+
+    <button onclick="mintCarteirinha()">Criar CarteirinhaNFT</button> <br>
+    <p id="mint_carteirinha"></p>
+    <br>
+
+    <button onclick="balanceOf()">Confirmar Mint</button> <br>
+    <p id="balance_of"></p>
+    <br>
+
+    <button onclick="setOwnerWallet()">Mintar na Metamask</button> <br>
+    <form id="form_set_owner_wallet" action="#" method="post">
+        <label>Digite a carteira que ira receber 1 CNFT: </label>
+        <input type="text" id="input_set_owner_wallet" value="">
+    </form>    
+    <p id="set_owner_wallet"></p>
+    <br>
+
+    <button onclick="adicionarConquista()">Adicionar Conquista</button> <br>
+    <form id="form_adicionar_conquista" action="#" method="post">
+        <label>Digite a conquista:</label>
+        <input type="text" id="input_adicionar_conquista" value=""><br><br>
+        <label>Digite a data da conquista no formato ddmmaa, por exemplo, 25122022:</label>
+        <input type="text" id="input_adicionar_data_conquista" value="">
+    </form>    
+    <p id="adicionar_conquista"></p>
+    <br>
+
+    <button onclick="lerHistoricoCarteirinha()">Ver Conquistas</button> <br> 
+    <p id="ler_historico_carteirinha"></p>
+    <br>
+
+    <button onclick="TransferFrom()">Transferir CNFT</button> <br>
+    <form id="form_transfer_from" action="#" method="post">
+        <label>Digite a carteira que possui o CNFT a ser transferido:</label>
+        <input type="text" id="input_transfer_from_sender" value=""><br><br>
+        <label>Digite a carteira que ira receber o CNFT:</label>
+        <input type="text" id="input_transfer_from_receiver" value="">
+    </form>
+    <p id="transfer_from"></p>
+    <br>
+>>>>>>> 58caf42 (acrescentado caixa de texto para insersao de dados e auto-preenchimento)
     
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"
         type="application/javascript"></script>
         <script src="index.js"></script>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 58caf42 (acrescentado caixa de texto para insersao de dados e auto-preenchimento)
 </body>
 </html>
